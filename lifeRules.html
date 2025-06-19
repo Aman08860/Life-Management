@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Life Rules Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-top: 30px;
+    }
+
+    input[type="text"] {
+      width: 70%;
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    select, button {
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      padding: 10px;
+      background: #eaeaea;
+      margin: 5px 0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .actions button {
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 My Life Rules</h1>
+
+    <input type="text" id="ruleInput" placeholder="Enter a new rule">
+    <select id="ruleType">
+      <option value="must">Must-Follow</option>
+      <option value="try">Try-to-Follow</option>
+    </select>
+    <button onclick="addRule()">Add Rule</button>
+
+    <h2>✅ Must-Follow Rules</h2>
+    <ul id="mustList"></ul>
+
+    <h2>🟡 Try-to-Follow Rules</h2>
+    <ul id="tryList"></ul>
+  </div>
+
+  <script>
+    let mustRules = [];
+    let tryRules = [];
+
+    function renderLists() {
+      const mustList = document.getElementById('mustList');
+      const tryList = document.getElementById('tryList');
+
+      mustList.innerHTML = '';
+      tryList.innerHTML = '';
+
+      mustRules.forEach((rule, index) => {
+        const li = createRuleItem(rule, index, 'must');
+        mustList.appendChild(li);
+      });
+
+      tryRules.forEach((rule, index) => {
+        const li = createRuleItem(rule, index, 'try');
+        tryList.appendChild(li);
+      });
+    }
+
+    function createRuleItem(rule, index, type) {
+      const li = document.createElement('li');
+      li.textContent = rule;
+
+      const actions = document.createElement('div');
+      actions.classList.add('actions');
+
+      const editBtn = document.createElement('button');
+      editBtn.textContent = 'Edit';
+      editBtn.onclick = () => editRule(index, type);
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.onclick = () => deleteRule(index, type);
+
+      actions.appendChild(editBtn);
+      actions.appendChild(deleteBtn);
+      li.appendChild(actions);
+
+      return li;
+    }
+
+    function addRule() {
+      const input = document.getElementById('ruleInput');
+      const type = document.getElementById('ruleType').value;
+      const rule = input.value.trim();
+      if (rule === '') return;
+
+      if (type === 'must') {
+        mustRules.push(rule);
+      } else {
+        tryRules.push(rule);
+      }
+
+      input.value = '';
+      renderLists();
+    }
+
+    function editRule(index, type) {
+      const newRule = prompt("Edit your rule:");
+      if (newRule !== null && newRule.trim() !== '') {
+        if (type === 'must') {
+          mustRules[index] = newRule.trim();
+        } else {
+          tryRules[index] = newRule.trim();
+        }
+        renderLists();
+      }
+    }
+
+    function deleteRule(index, type) {
+      if (type === 'must') {
+        mustRules.splice(index, 1);
+      } else {
+        tryRules.splice(index, 1);
+      }
+      renderLists();
+    }
+
+    renderLists();
+  </script>
+</body>
+</html>
